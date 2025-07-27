@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Task 4 – Full Project</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+    }
+    header {
+      background: #0066cc;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+    section {
+      padding: 1.5rem;
+    }
+    h2 {
+      color: #0066cc;
+    }
+
+    /* Portfolio Sections */
+    .portfolio {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* To-Do List */
+    #todoList input, button {
+      padding: 0.5rem;
+      margin: 0.2rem;
+    }
+
+    li.done {
+      text-decoration: line-through;
+      color: #888;
+    }
+
+    /* Product List */
+    .products {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .product {
+      background: #fff;
+      padding: 1rem;
+      flex: 1 1 200px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌟 Full Project – Task 4</h1>
+  </header>
+
+  <!-- Portfolio Section -->
+  <section>
+    <h2>👨‍💻 Portfolio</h2>
+    <div class="portfolio">
+      <div class="card">
+        <h3>About Me</h3>
+        <p>I'm a web developer passionate about building interactive and responsive websites.</p>
+      </div>
+      <div class="card">
+        <h3>Projects</h3>
+        <p>Task management apps, responsive portfolios, and more!</p>
+      </div>
+      <div class="card">
+        <h3>Contact</h3>
+        <p>Email: developer@example.com</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- To-Do List -->
+  <section>
+    <h2>📝 To-Do List (Local Storage)</h2>
+    <div id="todoList">
+      <input id="taskInput" placeholder="Add a new task..." />
+      <button onclick="addTask()">Add</button>
+      <ul id="taskItems"></ul>
+    </div>
+  </section>
+
+  <!-- Product Listing -->
+  <section>
+    <h2>🛒 Product Listing</h2>
+    <select id="sort" onchange="filterProducts()">
+      <option value="all">All</option>
+      <option value="priceLow">Price Low to High</option>
+      <option value="priceHigh">Price High to Low</option>
+    </select>
+    <div class="products" id="productList"></div>
+  </section>
+
+  <script>
+    // To-Do App
+    let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    function renderTasks() {
+      const list = document.getElementById("taskItems");
+      list.innerHTML = "";
+      tasks.forEach((task, i) => {
+        const li = document.createElement("li");
+        li.textContent = task.text;
+        li.className = task.done ? "done" : "";
+        li.onclick = () => {
+          tasks[i].done = !tasks[i].done;
+          saveTasks();
+        };
+        list.appendChild(li);
+      });
+    }
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      if (input.value.trim()) {
+        tasks.push({ text: input.value, done: false });
+        input.value = "";
+        saveTasks();
+      }
+    }
+
+    function saveTasks() {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+      renderTasks();
+    }
+
+    renderTasks();
+
+    // Product Filter
+    const products = [
+      { name: "Laptop", price: 900 },
+      { name: "Phone", price: 500 },
+      { name: "Headphones", price: 200 },
+    ];
+
+    function filterProducts() {
+      const sort = document.getElementById("sort").value;
+      let sorted = [...products];
+      if (sort === "priceLow") sorted.sort((a, b) => a.price - b.price);
+      else if (sort === "priceHigh") sorted.sort((a, b) => b.price - a.price);
+
+      const list = document.getElementById("productList");
+      list.innerHTML = "";
+      sorted.forEach(p => {
+        const div = document.createElement("div");
+        div.className = "product";
+        div.innerHTML = `<strong>${p.name}</strong><br>₹${p.price}`;
+        list.appendChild(div);
+      });
+    }
+
+    filterProducts(); // Initial load
+  </script>
+</body>
+</html>
